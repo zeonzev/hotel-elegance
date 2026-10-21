@@ -1,0 +1,22 @@
+# Hotel Elegance — reglas de Apache para la carpeta raíz del proyecto.
+# Todo se sirve desde public/; el resto de carpetas (app, config, database...)
+# nunca es accesible desde el navegador.
+
+Options -Indexes
+DirectoryIndex index.php
+
+<FilesMatch "^\.(env|git)|\.(sql|log|md|lock|bak|ini)$|^(composer\.(json|lock)|phpunit\.xml)$">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Indica a PHP que las URL amigables están disponibles
+    RewriteRule ^ - [E=HE_REESCRITURA:1]
+
+    # Lo que ya apunta a public/ se deja pasar
+    RewriteRule ^public/ - [L]
+
+    # Cualquier otra ruta se atiende desde public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>

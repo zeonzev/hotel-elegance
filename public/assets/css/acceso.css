@@ -1,0 +1,56 @@
+/* Pantallas de acceso: login, cambio de contraseña, instalador */
+.acceso { background: var(--he-fondo); }
+.acceso-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(420px, .85fr); min-height: 100vh; }
+.acceso-visual {
+  position: relative; background-size: cover; background-position: center; color: #fff;
+  display: flex; flex-direction: column; justify-content: space-between; padding: 2.5rem 3rem; overflow: hidden;
+}
+.acceso-visual-velo {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(8, 17, 30, .55) 0%, rgba(8, 17, 30, .15) 35%, rgba(8, 17, 30, .85) 100%),
+              linear-gradient(90deg, rgba(8, 17, 30, .35), transparent 60%);
+}
+.acceso-marca { position: relative; display: flex; align-items: center; gap: .85rem; color: #fff; }
+.acceso-marca img { width: 48px; height: 48px; }
+.acceso-marca .marca-texto strong { font-family: var(--he-serif); font-size: 1.55rem; color: #fff; display: block; }
+.acceso-marca .marca-texto span { font-size: .62rem; letter-spacing: .3em; text-transform: uppercase; color: var(--he-oro-300); }
+.acceso-cita { position: relative; max-width: 560px; animation: subir .7s .1s both; }
+.acceso-cita .sobretitulo { color: var(--he-oro-300); }
+.acceso-cita h2 { font-size: clamp(2.2rem, 3.6vw, 3.4rem); line-height: 1.05; margin: .8rem 0 1rem; color: #fff; font-weight: 600; }
+.acceso-cita h2 em { color: var(--he-oro-300); font-style: italic; font-weight: 500; }
+.acceso-cita p { color: rgba(255, 255, 255, .78); font-size: 1rem; max-width: 460px; }
+.acceso-datos { display: flex; gap: 2.2rem; margin-top: 1.8rem; padding-top: 1.4rem; border-top: 1px solid rgba(255, 255, 255, .18); }
+.acceso-datos strong { display: block; font-family: var(--he-serif); font-size: 2rem; line-height: 1; color: #fff; }
+.acceso-datos span { font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: rgba(255, 255, 255, .65); }
+.acceso-panel { display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2.5rem 2rem 1.5rem; background: var(--he-superficie); position: relative; }
+.acceso-caja { width: 100%; max-width: 400px; margin: auto 0; animation: subir .5s both; }
+.acceso-caja h1 { font-size: 2.4rem; margin: .5rem 0 .4rem; }
+.acceso-caja > p, .acceso-caja .intro { color: var(--he-texto-suave); margin-bottom: 1.8rem; }
+.acceso-caja .form-control { min-height: 48px; border-radius: 12px; }
+.acceso-caja .btn-lg { width: 100%; min-height: 50px; }
+.campo-clave { position: relative; }
+.campo-clave .form-control { padding-right: 3rem; }
+.campo-clave button { position: absolute; right: .4rem; top: 50%; transform: translateY(-50%); border: 0; background: none; color: var(--he-texto-tenue); padding: .4rem .6rem; border-radius: 8px; }
+.campo-clave button:hover { color: var(--he-texto); background: var(--he-superficie-3); }
+.acceso-demo { margin-top: 1.8rem; padding: 1rem 1.1rem; border-radius: 14px; background: var(--he-superficie-2); border: 1px dashed var(--he-borde-fuerte); font-size: .8rem; }
+.acceso-demo button { border: 1px solid var(--he-borde); background: var(--he-superficie); border-radius: 9px; padding: .4rem .6rem; font-size: .76rem; color: var(--he-texto); display: flex; flex-direction: column; align-items: flex-start; flex: 1; transition: all var(--he-transicion); }
+.acceso-demo button:hover { border-color: var(--he-oro-500); box-shadow: var(--he-sombra-sm); }
+.acceso-demo button span { color: var(--he-texto-tenue); font-size: .68rem; }
+.acceso-pie { font-size: .72rem; color: var(--he-texto-tenue); margin: 1.5rem 0 0; text-align: center; }
+.medidor { display: flex; gap: 4px; margin-top: .5rem; }
+.medidor span { flex: 1; height: 4px; border-radius: 4px; background: var(--he-superficie-3); transition: background .2s; }
+.medidor[data-nivel="1"] span:nth-child(-n+1) { background: var(--he-rojo); }
+.medidor[data-nivel="2"] span:nth-child(-n+2) { background: var(--he-ambar); }
+.medidor[data-nivel="3"] span:nth-child(-n+3) { background: var(--he-oro-500); }
+.medidor[data-nivel="4"] span { background: var(--he-verde); }
+.requisitos { list-style: none; padding: 0; margin: .6rem 0 0; font-size: .75rem; color: var(--he-texto-tenue); display: grid; grid-template-columns: 1fr 1fr; gap: .2rem .8rem; }
+.requisitos li.ok { color: var(--he-verde); }
+.requisitos li::before { content: '○ '; }
+.requisitos li.ok::before { content: '● '; }
+@media (max-width: 991.98px) {
+  .acceso-grid { grid-template-columns: 1fr; }
+  .acceso-visual { min-height: 260px; padding: 1.5rem; }
+  .acceso-cita h2 { font-size: 2rem; }
+  .acceso-cita p, .acceso-datos { display: none; }
+  .acceso-panel { padding: 2rem 1.25rem 1.25rem; }
+}
