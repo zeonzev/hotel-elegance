@@ -97,7 +97,7 @@ function activo(string $prefijo, bool $exacto = false): string
 /** Monto en bolivianos con formato boliviano: Bs 12.345,50 */
 function bs(mixed $monto, int $decimales = 2): string
 {
-    return 'Bs ' . number_format((float) $monto, $decimales, ',', '.');
+    return "Bs\u{00A0}" . number_format((float) $monto, $decimales, ',', '.');
 }
 
 function numero(mixed $valor, int $decimales = 0): string
