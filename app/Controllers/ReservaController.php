@@ -35,7 +35,7 @@ final class ReservaController extends Controlador
     public function crear(): Respuesta
     {
         $huesped = null;
-        if ($id = $this->entero('huesped')) {
+        if ($id = $this->entero('huesped') ?: (int) anterior('id_huesped', 0)) {
             $huesped = HuespedRepositorio::buscar($id);
         }
         $solicitud = null;

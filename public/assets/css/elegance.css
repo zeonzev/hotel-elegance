@@ -891,3 +891,7 @@ a.item-lista:hover { background: var(--he-superficie-2); color: var(--he-texto);
 .form-select { padding-right: 2.25rem; }
 .form-select-sm { padding-right: 2rem; }
 .hab-huesped { padding-right: 1.6rem; }
+.item-lista .btn, .item-lista .tabular, .btn { white-space: nowrap; }
+.segmentos label { margin: 0; }
+.segmentos label .btn { border: 0; color: var(--he-texto-suave); }
+.segmentos label .btn.active { background: var(--he-superficie); color: var(--he-texto); box-shadow: var(--he-sombra-sm); }

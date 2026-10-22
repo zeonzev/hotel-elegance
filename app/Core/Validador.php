@@ -40,7 +40,7 @@ final class Validador
             $etiqueta = $nombres[$campo] ?? self::NOMBRES[$campo] ?? str_replace('_', ' ', $campo);
 
             foreach ($lista as $regla) {
-                if (is_callable($regla)) {
+                if ($regla instanceof \Closure) {
                     if (!$vacio && ($mensaje = $regla($valor, $datos)) !== true && $mensaje !== null) {
                         $errores[$campo] = (string) $mensaje;
                         break;

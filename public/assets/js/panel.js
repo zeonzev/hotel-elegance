@@ -267,6 +267,7 @@
     const boton = formulario.querySelector('button[type="submit"]:not([data-no-bloquear])');
     if (boton && !formulario.dataset.permitirReenvio && formulario.method.toLowerCase() === 'post') {
       setTimeout(() => {
+        if (evento.defaultPrevented) return;
         boton.disabled = true;
         boton.dataset.textoOriginal = boton.innerHTML;
         boton.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Procesando…';

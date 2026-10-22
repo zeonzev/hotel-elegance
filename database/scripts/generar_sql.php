@@ -137,7 +137,7 @@ $categorias = [
     3 => ['Matrimonial', 'Cama Queen con ropa de cama de algodón egipcio, iluminación cálida y detalles de diseño boliviano contemporáneo.', 2, 520, '1 cama Queen', 28,
         'Wi-Fi de alta velocidad|Cama Queen premium|Smart TV 50"|Cafetera de cápsulas|Bata y pantuflas|Calefacción', 'matrimonial-1.jpg'],
     4 => ['Suite', 'Nuestra experiencia más exclusiva: sala independiente, tina, vista panorámica al Illimani y atención personalizada.', 4, 890, '1 cama King + sofá cama', 48,
-        'Vista al Illimani|Sala de estar independiente|Tina de hidromasaje|Smart TV 65"|Minibar premium|Desayuno en la habitación', 'suite-1.jpg'],
+        'Vista al Illimani|Sala de estar independiente|Tina de hidromasaje|Smart TV 65"|Minibar premium|Desayuno en la habitación', 'suite-2.jpg'],
 ];
 $filas = [];
 foreach ($categorias as $id => $c) {

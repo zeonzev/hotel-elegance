@@ -16,7 +16,8 @@ $rutas = [
     '/panel/huespedes', '/panel/huespedes/nuevo', '/panel/huespedes/1', '/panel/huespedes/1/editar', '/panel/api/huespedes?q=ma',
     '/panel/habitaciones', '/panel/habitaciones?vista=lista', '/panel/habitaciones/1', '/panel/habitaciones/nueva', '/panel/habitaciones/1/editar',
     '/panel/categorias', '/panel/categorias/nueva', '/panel/categorias/1/editar',
-    '/panel/reservas', '/panel/sobreventa', '/panel/tarifas', '/panel/reportes', '/panel/no-existe',
+    '/panel/reservas', '/panel/reservas?estado=CONFIRMADA', '/panel/reservas/nueva', '/panel/reservas/1', '/panel/reservas/1/recibo', '/panel/recepcion', '/panel/disponibilidad', '/panel/disponibilidad?ingreso=2030-01-01&salida=2030-01-03', '/panel/solicitudes', '/panel/solicitudes?pestana=mensajes',
+    '/panel/sobreventa', '/panel/tarifas', '/panel/reportes', '/panel/no-existe',
 ];
 
 function pedir(string $url, string $cookies, ?array $post = null): array
