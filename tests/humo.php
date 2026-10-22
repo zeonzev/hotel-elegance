@@ -11,13 +11,21 @@ declare(strict_types=1);
 $base = rtrim($argv[1] ?? 'http://localhost/hotel-elegance', '/');
 $usuarios = ['admin' => 'Admin123*', 'recepcion' => 'Recepcion123*', 'gerente' => 'Gerente123*'];
 $rutas = [
+    // Sitio público
+    '/', '/habitaciones', '/habitaciones/1', '/reservar', '/reservar/gracias', '/contacto', '/api/disponibilidad?ingreso=' . date('Y-m-d', strtotime('+30 days')) . '&salida=' . date('Y-m-d', strtotime('+32 days')), '/instalar',
+    // Panel
     '/panel', '/panel/perfil', '/panel/buscar?q=mam', '/panel/api/buscar?q=101',
-    '/panel/personal', '/panel/personal/nuevo', '/panel/personal/1/editar', '/panel/usuarios', '/panel/bitacora', '/panel/configuracion',
+    '/panel/personal', '/panel/personal/nuevo', '/panel/personal/1/editar', '/panel/usuarios', '/panel/bitacora', '/panel/bitacora?formato=csv', '/panel/configuracion',
     '/panel/huespedes', '/panel/huespedes/nuevo', '/panel/huespedes/1', '/panel/huespedes/1/editar', '/panel/api/huespedes?q=ma',
     '/panel/habitaciones', '/panel/habitaciones?vista=lista', '/panel/habitaciones/1', '/panel/habitaciones/nueva', '/panel/habitaciones/1/editar',
     '/panel/categorias', '/panel/categorias/nueva', '/panel/categorias/1/editar',
-    '/panel/reservas', '/panel/reservas?estado=CONFIRMADA', '/panel/reservas/nueva', '/panel/reservas/1', '/panel/reservas/1/recibo', '/panel/recepcion', '/panel/disponibilidad', '/panel/disponibilidad?ingreso=2030-01-01&salida=2030-01-03', '/panel/solicitudes', '/panel/solicitudes?pestana=mensajes',
-    '/panel/sobreventa', '/panel/tarifas', '/panel/reportes', '/panel/no-existe',
+    '/panel/reservas', '/panel/reservas?estado=CONFIRMADA&periodo=proximas', '/panel/reservas?formato=csv', '/panel/reservas/nueva', '/panel/reservas/nueva?solicitud=1',
+    '/panel/reservas/1', '/panel/reservas/1/recibo', '/panel/recepcion', '/panel/disponibilidad', '/panel/disponibilidad?ingreso=2030-01-01&salida=2030-01-03',
+    '/panel/api/disponibilidad?ingreso=' . date('Y-m-d', strtotime('+4 days')) . '&salida=' . date('Y-m-d', strtotime('+6 days')), '/panel/solicitudes', '/panel/solicitudes?pestana=mensajes',
+    '/panel/sobreventa', '/panel/sobreventa?fecha=' . date('Y-m-d', strtotime('+5 days')) . '&ingreso=600', '/panel/sobreventa/historial', '/panel/api/sobreventa/alerta?ingreso=' . date('Y-m-d', strtotime('+4 days')) . '&salida=' . date('Y-m-d', strtotime('+6 days')),
+    '/panel/tarifas', '/panel/tarifas?vista=todas', '/panel/tarifas/nueva', '/panel/tarifas/1/editar', '/panel/tarifas/sugerencia', '/panel/tarifas/sugerencia?desde=' . date('Y-m-d', strtotime('+20 days')) . '&categoria=2',
+    '/panel/reportes', '/panel/reportes/ocupacion', '/panel/reportes/ocupacion?rango=anio&formato=xlsx', '/panel/reportes/ingresos?rango=mes', '/panel/reportes/ingresos?formato=csv',
+    '/panel/reportes/cancelaciones?rango=trimestre', '/panel/reportes/cancelaciones?formato=imprimir', '/panel/no-existe',
 ];
 
 function pedir(string $url, string $cookies, ?array $post = null): array
@@ -47,7 +55,7 @@ foreach ($usuarios as $usuario => $clave) {
     foreach ($rutas as $ruta) {
         [$codigo, $cuerpo] = pedir($base . $ruta, $cookies);
         $avisoPhp = preg_match('/(Fatal error|Warning:|Notice:|Deprecated:|Uncaught)/', $cuerpo);
-        $esperado = in_array($codigo, [200, 302, 403, 404, 501], true) && !$avisoPhp;
+        $esperado = in_array($codigo, [200, 302, 403, 404], true) && !$avisoPhp;
         if (!$esperado) {
             $fallos++;
         }
