@@ -24,11 +24,13 @@ $explicacion = match ($codigoBd ?? 0) {
             <h2 class="h6 fw-semibold">Elija una de estas opciones:</h2>
             <ol class="fs-sm texto-suave ps-3 mb-4" style="line-height:1.8">
                 <li>Abra el <strong>Panel de control de XAMPP</strong> y presione <em>Start</em> en <strong>Apache</strong> y <strong>MySQL</strong>.</li>
-                <li>Importe <code>database/hotel_elegance.sql</code> en phpMyAdmin (pestaña <em>Importar</em>).</li>
+                <li>Use el <strong>instalador automático</strong> (crea la base e importa los datos de prueba con un clic).</li>
+                <li>O importe <code>database/hotel_elegance.sql</code> en phpMyAdmin (pestaña <em>Importar</em>).</li>
                 <li>Si su MySQL usa otro usuario, contraseña o puerto, copie <code>.env.example</code> como <code>.env</code> y ajústelo.</li>
             </ol>
             <div class="d-flex flex-wrap gap-2">
-                <a class="btn btn-oro btn-lg" href="/phpmyadmin/" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right"></i> phpMyAdmin</a>
+                <a class="btn btn-oro btn-lg" href="<?= url('/instalar') ?>"><i class="bi bi-magic"></i> Abrir el instalador</a>
+                <a class="btn btn-claro btn-lg" href="/phpmyadmin/" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right"></i> phpMyAdmin</a>
             </div>
         </div>
     </div>

@@ -29,10 +29,7 @@ return static function (Enrutador $r): void {
     // ------------------------------------------------------------------
     // Sitio público del hotel
     // ------------------------------------------------------------------
-    // Mientras el sitio público está en desarrollo, la raíz lleva al acceso del panel
-    $r->get('/', class_exists(SitioController::class)
-        ? [SitioController::class, 'inicio']
-        : static fn () => \App\Core\Respuesta::redirigir('/login'));
+    $r->get('/', [SitioController::class, 'inicio']);
     $r->get('/habitaciones', [SitioController::class, 'habitaciones']);
     $r->get('/habitaciones/{id}', [SitioController::class, 'habitacion']);
     $r->get('/reservar', [SitioController::class, 'reservar']);

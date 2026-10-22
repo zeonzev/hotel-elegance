@@ -36,7 +36,7 @@ $avance = [1 => 'Sesiones', 2 => 'Gestión de Huéspedes', 3 => 'Gestión de Hab
             <p class="texto-suave">Esta sección forma parte del Product Backlog y se encuentra <strong>en desarrollo</strong>. El modelo de datos, los disparadores y la lógica de negocio del módulo ya están implementados; la interfaz se entrega en el sprint correspondiente.</p>
             <h2 class="h6 fw-semibold mt-4 mb-3" style="font-family:var(--he-sans)">Avance del proyecto por sprint</h2>
             <ul class="lista-limpia">
-                <?php foreach ($avance as $n => $nombre): $estado = $n <= 3 ? 'listo' : ($n === 4 ? 'parcial' : 'pendiente'); ?>
+                <?php foreach ($avance as $n => $nombre): $estado = 'listo'; ?>
                     <li class="d-flex align-items-center gap-3 py-2 border-bottom">
                         <span class="icono-chip <?= $estado === 'listo' ? 'chip-verde' : ($estado === 'parcial' ? 'chip-ambar' : 'chip-gris') ?>" style="width:30px;height:30px;font-size:.85rem"><i class="bi <?= $estado === 'listo' ? 'bi-check-lg' : ($estado === 'parcial' ? 'bi-hourglass-split' : 'bi-circle') ?>"></i></span>
                         <span class="flex-grow-1">Sprint <?= $n ?> · <?= e($nombre) ?></span>

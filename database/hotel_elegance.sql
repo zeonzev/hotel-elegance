@@ -672,16 +672,16 @@ INSERT INTO empleado (id_empleado, ci, nombres, apellidos, id_cargo, telefono, c
  (8, '5412987', 'Gabriela', 'Rocha Salinas', 3, '+591 72284511', 'gabriela.rocha@hotelelegance.bo', 'Av. 6 de Agosto N.º 2210', CURDATE() + INTERVAL -1300 DAY, 'ACTIVO');
 
 INSERT INTO usuario (id_usuario, id_empleado, id_rol, nombre_usuario, contrasena_hash, estado, cambiar_contrasena, ultimo_acceso, creado_en) VALUES
- (1, 2, 1, 'admin', '$2y$10$pDxT7fqVxBjqiOQStpcpY.PFKNJ8EGVkcEC1n/4gO/ksVdwozXmWC', 'ACTIVO', 0, TIMESTAMP(CURDATE(), '07:10:00'), TIMESTAMP(CURDATE() + INTERVAL -400 DAY, '09:00:00')),
- (2, 3, 2, 'recepcion', '$2y$10$MvOLBl1Z9djFlh4iZzp2nOf39HOWzNw8jYUKopqb6T2Q9FdMpNqrW', 'ACTIVO', 0, TIMESTAMP(CURDATE(), '07:25:00'), TIMESTAMP(CURDATE() + INTERVAL -400 DAY, '09:00:00')),
- (3, 1, 3, 'gerente', '$2y$10$upYWfjyPZdSVe0hAfe1fjOb.gLfO7xw/lqp2gaCwWS53bb155bsri', 'ACTIVO', 0, TIMESTAMP(CURDATE(), '08:00:00'), TIMESTAMP(CURDATE() + INTERVAL -400 DAY, '09:00:00')),
- (4, 4, 2, 'rcondori', '$2y$10$ID.Hn1ZfjVHirsKvBtgN2.PLaQD9SirFn9rJ2s3ecNM7c4LgDvfcG', 'ACTIVO', 1, TIMESTAMP(CURDATE() + INTERVAL -1 DAY, '08:25:00'), TIMESTAMP(CURDATE() + INTERVAL -400 DAY, '09:00:00'));
+ (1, 2, 1, 'admin', '$2y$10$Ij5CW/CGTstZYaUJcESy5u2T.b5xSxjIVdIMwb4VmZvVaIfZDBuUm', 'ACTIVO', 0, TIMESTAMP(CURDATE(), '07:10:00'), TIMESTAMP(CURDATE() + INTERVAL -400 DAY, '09:00:00')),
+ (2, 3, 2, 'recepcion', '$2y$10$DUiDLlFLBHVvJHNNjGDnpOQrIaqsyL3aGs08C88rlQNfjaLIutylS', 'ACTIVO', 0, TIMESTAMP(CURDATE(), '07:25:00'), TIMESTAMP(CURDATE() + INTERVAL -400 DAY, '09:00:00')),
+ (3, 1, 3, 'gerente', '$2y$10$fX3eHgiTY5rEMzp9bPvPaO5guKZHuM4sO81G7tBRJxeW7wUkAFBgS', 'ACTIVO', 0, TIMESTAMP(CURDATE(), '08:00:00'), TIMESTAMP(CURDATE() + INTERVAL -400 DAY, '09:00:00')),
+ (4, 4, 2, 'rcondori', '$2y$10$TRyZTXtWK0Y62ko0Hxd1C.whDmH73l.RV7TPHLoL657jDk7zJw9hK', 'ACTIVO', 1, TIMESTAMP(CURDATE() + INTERVAL -1 DAY, '08:25:00'), TIMESTAMP(CURDATE() + INTERVAL -400 DAY, '09:00:00'));
 
 INSERT INTO categoria_habitacion (id_categoria, nombre, descripcion, capacidad, tarifa_base, camas, superficie_m2, comodidades, imagen, estado) VALUES
  (1, 'Simple', 'Refugio sereno para el viajero de negocios: cama amplia, escritorio de trabajo y vista a la ciudad de La Paz.', 1, 320.00, '1 cama de 1½ plazas', 18, 'Wi-Fi de alta velocidad|Escritorio de trabajo|Smart TV 43"|Ducha de lluvia|Calefacción|Caja de seguridad', 'simple-1.jpg', 1),
  (2, 'Doble', 'Dos camas independientes y espacio generoso, ideal para colegas o amigos que exploran la ciudad juntos.', 2, 460.00, '2 camas de 1½ plazas', 26, 'Wi-Fi de alta velocidad|Dos camas individuales|Smart TV 50"|Minibar|Calefacción|Set de té andino', 'doble-1.jpg', 1),
  (3, 'Matrimonial', 'Cama Queen con ropa de cama de algodón egipcio, iluminación cálida y detalles de diseño boliviano contemporáneo.', 2, 520.00, '1 cama Queen', 28, 'Wi-Fi de alta velocidad|Cama Queen premium|Smart TV 50"|Cafetera de cápsulas|Bata y pantuflas|Calefacción', 'matrimonial-1.jpg', 1),
- (4, 'Suite', 'Nuestra experiencia más exclusiva: sala independiente, tina, vista panorámica al Illimani y atención personalizada.', 4, 890.00, '1 cama King + sofá cama', 48, 'Vista al Illimani|Sala de estar independiente|Tina de hidromasaje|Smart TV 65"|Minibar premium|Desayuno en la habitación', 'suite-1.jpg', 1);
+ (4, 'Suite', 'Nuestra experiencia más exclusiva: sala independiente, tina, vista panorámica al Illimani y atención personalizada.', 4, 890.00, '1 cama King + sofá cama', 48, 'Vista al Illimani|Sala de estar independiente|Tina de hidromasaje|Smart TV 65"|Minibar premium|Desayuno en la habitación', 'suite-3.jpg', 1);
 
 INSERT INTO temporada (id_temporada, nombre, tipo, fecha_inicio, fecha_fin, descripcion, color, estado) VALUES
  (1, 'Fin de año 2025', 'ESPECIAL', '2025-12-28', '2026-01-02', 'Celebraciones de Año Nuevo en La Paz.', '#B4553F', 1),

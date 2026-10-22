@@ -1,0 +1,133 @@
+/* =====================================================================
+   Hotel Elegance — sitio público
+   ===================================================================== */
+.sitio { background: var(--he-arena-50); color: var(--he-texto); font-size: 1rem; }
+.contenedor { width: min(1240px, 100% - 2.5rem); margin: 0 auto; }
+.sitio h1, .sitio h2 { font-family: var(--he-serif); font-weight: 600; letter-spacing: -.015em; }
+.seccion { padding: 6.5rem 0; }
+.seccion-titulo { max-width: 680px; margin-bottom: 3rem; }
+.seccion-titulo h2 { font-size: clamp(2.2rem, 4vw, 3.3rem); line-height: 1.05; margin: .6rem 0 1rem; }
+.seccion-titulo p { color: var(--he-texto-suave); font-size: 1.05rem; }
+.centrado { margin-left: auto; margin-right: auto; text-align: center; }
+
+/* Navegación */
+.sitio-nav { position: sticky; top: 0; z-index: 1030; padding: 1rem 0; background: rgba(251, 250, 247, .9); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--he-borde); transition: all .3s ease; }
+.sitio-nav.transparente { position: fixed; left: 0; right: 0; background: transparent; border-color: transparent; }
+.sitio-nav.transparente:not(.solida) .sitio-marca, .sitio-nav.transparente:not(.solida) .sitio-menu a, .sitio-nav.transparente:not(.solida) .sitio-hamburguesa { color: #fff; }
+.sitio-nav.solida { background: rgba(15, 27, 45, .92); border-color: rgba(255, 255, 255, .06); padding: .7rem 0; }
+.sitio-nav.solida .sitio-marca, .sitio-nav.solida .sitio-menu a, .sitio-nav.solida .sitio-hamburguesa { color: #fff; }
+.sitio-marca { display: inline-flex; align-items: center; gap: .75rem; color: var(--he-texto); }
+.sitio-marca img { width: 42px; height: 42px; }
+.sitio-marca strong { display: block; font-family: var(--he-serif); font-size: 1.4rem; line-height: 1; }
+.sitio-marca small { font-size: .6rem; letter-spacing: .3em; text-transform: uppercase; color: var(--he-oro-500); }
+.sitio-menu { display: flex; gap: 2rem; }
+.sitio-menu a { color: var(--he-texto); font-weight: 500; font-size: .9rem; position: relative; padding: .25rem 0; }
+.sitio-menu a::after { content: ''; position: absolute; left: 0; right: 100%; bottom: -2px; height: 1.5px; background: var(--he-oro-500); transition: right .25s ease; }
+.sitio-menu a:hover::after, .sitio-menu a.activo::after { right: 0; }
+.sitio-hamburguesa { border: 0; background: none; font-size: 1.6rem; color: var(--he-texto); }
+
+/* Hero */
+.hero { position: relative; min-height: 100vh; display: flex; align-items: flex-end; color: #fff; background-size: cover; background-position: center; padding: 9rem 0 4rem; }
+.hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8, 17, 30, .55) 0%, rgba(8, 17, 30, .2) 40%, rgba(8, 17, 30, .85) 100%); }
+.hero .contenedor { position: relative; }
+.hero h1 { font-size: clamp(3rem, 7vw, 6rem); line-height: .95; color: #fff; max-width: 900px; margin: 1rem 0 1.4rem; animation: subir .9s .1s both; }
+.hero h1 em { color: var(--he-oro-300); font-weight: 500; }
+.hero p { font-size: 1.15rem; color: rgba(255, 255, 255, .82); max-width: 560px; animation: subir .9s .25s both; }
+.hero .sobretitulo { color: var(--he-oro-300); animation: subir .9s both; }
+.buscador-reserva {
+  margin-top: 3rem; display: grid; grid-template-columns: repeat(3, 1fr) auto; gap: 1px; background: rgba(255, 255, 255, .18);
+  border-radius: 18px; overflow: hidden; box-shadow: 0 30px 60px -20px rgba(0, 0, 0, .5); max-width: 940px; animation: subir .9s .4s both;
+}
+.buscador-reserva label { background: rgba(255, 255, 255, .97); padding: 1rem 1.25rem; display: block; margin: 0; color: var(--he-texto); }
+.buscador-reserva span { display: block; font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--he-texto-tenue); font-weight: 600; }
+.buscador-reserva input, .buscador-reserva select { border: 0; padding: .2rem 0 0; width: 100%; font-weight: 600; background: transparent; color: var(--he-texto); outline: 0; }
+.buscador-reserva button { border: 0; background: var(--he-oro-500); color: var(--he-noche-900); font-weight: 650; padding: 0 2.2rem; display: flex; align-items: center; gap: .5rem; transition: background .2s; }
+.buscador-reserva button:hover { background: var(--he-oro-400); }
+.hero-indicadores { display: flex; gap: 3rem; margin-top: 3rem; padding-top: 1.6rem; border-top: 1px solid rgba(255, 255, 255, .18); max-width: 940px; animation: subir .9s .55s both; }
+.hero-indicadores strong { display: block; font-family: var(--he-serif); font-size: 2.2rem; line-height: 1; }
+.hero-indicadores span { font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: rgba(255, 255, 255, .7); }
+
+/* Bloques */
+.imagen-marco { position: relative; border-radius: 26px; overflow: hidden; box-shadow: var(--he-sombra-lg); }
+.imagen-marco img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.sello { position: absolute; left: -1.5rem; bottom: 2rem; background: var(--he-noche-900); color: #fff; border-radius: 18px; padding: 1.2rem 1.4rem; box-shadow: var(--he-sombra-lg); }
+.sello strong { font-family: var(--he-serif); font-size: 2.4rem; color: var(--he-oro-300); display: block; line-height: 1; }
+.tarjeta-hab { background: #fff; border-radius: 22px; overflow: hidden; border: 1px solid var(--he-borde); transition: transform .35s ease, box-shadow .35s ease; height: 100%; display: flex; flex-direction: column; color: var(--he-texto); }
+.tarjeta-hab:hover { transform: translateY(-6px); box-shadow: var(--he-sombra-lg); color: var(--he-texto); }
+.tarjeta-hab .foto { position: relative; aspect-ratio: 4 / 3; overflow: hidden; }
+.tarjeta-hab .foto img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s ease; }
+.tarjeta-hab:hover .foto img { transform: scale(1.06); }
+.tarjeta-hab .precio { position: absolute; right: 1rem; bottom: 1rem; background: rgba(15, 27, 45, .88); color: #fff; padding: .45rem .8rem; border-radius: 12px; font-size: .8rem; backdrop-filter: blur(6px); }
+.tarjeta-hab .precio strong { font-size: 1.1rem; color: var(--he-oro-300); }
+.tarjeta-hab .cuerpo { padding: 1.5rem; display: flex; flex-direction: column; flex: 1; }
+.tarjeta-hab h3 { font-family: var(--he-serif); font-size: 1.9rem; margin-bottom: .4rem; }
+.rasgos { display: flex; flex-wrap: wrap; gap: 1rem; font-size: .82rem; color: var(--he-texto-suave); margin: .6rem 0 1rem; }
+.rasgos i { color: var(--he-oro-600); }
+.servicio { padding: 2rem; border-radius: 20px; background: #fff; border: 1px solid var(--he-borde); height: 100%; transition: transform .3s, box-shadow .3s; }
+.servicio:hover { transform: translateY(-4px); box-shadow: var(--he-sombra); }
+.servicio i { font-size: 1.6rem; color: var(--he-oro-600); }
+.servicio h3 { font-family: var(--he-sans); font-size: 1.05rem; font-weight: 650; margin: 1rem 0 .4rem; }
+.servicio p { font-size: .9rem; color: var(--he-texto-suave); margin: 0; }
+.seccion-oscura { background: radial-gradient(80% 60% at 100% 0%, rgba(198, 161, 91, .18), transparent 60%), var(--he-noche-900); color: #E9E6DF; }
+.seccion-oscura h2 { color: #fff; }
+.seccion-oscura .seccion-titulo p { color: #A7AFBE; }
+.panorama { position: relative; border-radius: 26px; overflow: hidden; min-height: 420px; background-size: cover; background-position: center; display: flex; align-items: flex-end; }
+.panorama::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 30%, rgba(8, 17, 30, .9)); }
+.panorama .contenido { position: relative; padding: 2.5rem; color: #fff; }
+.lugar { display: flex; gap: 1rem; padding: 1.2rem 0; border-bottom: 1px solid rgba(255, 255, 255, .08); }
+.lugar i { font-size: 1.3rem; color: var(--he-oro-400); }
+.lugar strong { display: block; color: #fff; }
+.lugar span { font-size: .88rem; color: #A7AFBE; }
+.evento { background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .08); border-radius: 18px; padding: 1.3rem; height: 100%; }
+.evento .fecha { font-family: var(--he-serif); font-size: 1.6rem; color: var(--he-oro-300); }
+.testimonio { background: #fff; border-radius: 22px; padding: 2rem; border: 1px solid var(--he-borde); height: 100%; }
+.testimonio blockquote { font-family: var(--he-serif); font-size: 1.35rem; line-height: 1.35; margin: 1rem 0 1.4rem; }
+.estrellas { color: var(--he-oro-500); letter-spacing: .1em; }
+.cta { border-radius: 28px; padding: 4rem; background: linear-gradient(120deg, rgba(8, 17, 30, .92), rgba(8, 17, 30, .55)), url('../img/hotel/lobby.jpg') center/cover; color: #fff; }
+.cta h2 { color: #fff; font-size: clamp(2rem, 4vw, 3rem); }
+.cabecera-pagina { padding: 9rem 0 4rem; background: radial-gradient(70% 80% at 80% 0%, rgba(198, 161, 91, .16), transparent 60%), var(--he-noche-900); color: #fff; }
+.cabecera-pagina h1 { color: #fff; font-size: clamp(2.6rem, 5vw, 4rem); margin: .6rem 0 .8rem; }
+.cabecera-pagina p { color: #A7AFBE; max-width: 640px; font-size: 1.05rem; }
+.cabecera-pagina .sobretitulo { color: var(--he-oro-300); }
+.galeria { display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; gap: .8rem; height: 520px; }
+.galeria img { width: 100%; height: 100%; object-fit: cover; border-radius: 18px; }
+.galeria img:first-child { grid-row: span 2; }
+.lista-comodidades { columns: 2; list-style: none; padding: 0; }
+.lista-comodidades li { padding: .45rem 0; break-inside: avoid; }
+.lista-comodidades i { color: var(--he-oro-600); margin-right: .5rem; }
+.panel-reserva { position: sticky; top: 100px; background: #fff; border-radius: 22px; border: 1px solid var(--he-borde); box-shadow: var(--he-sombra); padding: 1.8rem; }
+.opcion-categoria .contenido { display: flex; gap: 1rem; align-items: center; }
+.opcion-categoria img { width: 96px; height: 72px; object-fit: cover; border-radius: 12px; }
+.revelar { opacity: 0; transform: translateY(26px); transition: opacity .8s ease, transform .8s ease; }
+.revelar.visible { opacity: 1; transform: none; }
+
+/* Pie */
+.sitio-pie { background: var(--he-noche-950); color: #A7AFBE; padding: 5rem 0 2rem; font-size: .9rem; }
+.sitio-pie .sitio-marca { color: #fff; }
+.sitio-pie h4 { font-family: var(--he-sans); font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: var(--he-oro-400); margin-bottom: 1.1rem; }
+.sitio-pie li { padding: .3rem 0; }
+.sitio-pie a { color: #C9CFDA; }
+.sitio-pie a:hover { color: var(--he-oro-300); }
+.sitio-pie i { color: var(--he-oro-400); margin-right: .3rem; }
+.sitio-pie-legal { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, .08); font-size: .76rem; }
+
+@media (max-width: 991.98px) {
+  .sitio-menu { position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; gap: 0; background: var(--he-noche-900); padding: .5rem 1.25rem 1rem; display: none; }
+  .sitio-menu.abierto { display: flex; }
+  .sitio-menu a { color: #fff !important; padding: .8rem 0; border-bottom: 1px solid rgba(255, 255, 255, .06); }
+  .buscador-reserva { grid-template-columns: 1fr 1fr; }
+  .buscador-reserva button { grid-column: span 2; padding: 1rem; justify-content: center; }
+  .seccion { padding: 4.5rem 0; }
+  .galeria { height: 360px; }
+  .sello { left: 1rem; }
+  .cta { padding: 2.5rem 1.5rem; }
+  .panel-reserva { position: static; }
+}
+@media (max-width: 575.98px) {
+  .hero-indicadores { gap: 1.5rem; }
+  .hero-indicadores strong { font-size: 1.7rem; }
+  .galeria { grid-template-columns: 1fr; grid-template-rows: none; height: auto; }
+  .galeria img { height: 220px; }
+  .galeria img:first-child { grid-row: auto; }
+  .lista-comodidades { columns: 1; }
+}
