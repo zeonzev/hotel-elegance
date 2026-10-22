@@ -25,8 +25,9 @@ final class ReporteController extends Controlador
         $ocupacion = ReporteServicio::ocupacion($mes[1], $mes[2])['resumen'];
         $ingresos = ReporteServicio::ingresos($mes[1], $mes[2])['resumen'];
         $cancel = ReporteServicio::cancelaciones($mes[1], $mes[2])['resumen'];
+        $procedencia = ReporteServicio::procedencia($mes[1], $mes[2]);
         return $this->vista('reportes/index', [
-            'titulo' => 'Reportes', 'ocupacion' => $ocupacion, 'ingresos' => $ingresos, 'cancel' => $cancel,
+            'titulo' => 'Reportes', 'ocupacion' => $ocupacion, 'ingresos' => $ingresos, 'cancel' => $cancel, 'procedencia' => $procedencia,
             'rendimiento' => DashboardServicio::rendimiento($mes[1], $mes[2], $total), 'periodo' => $mes,
         ]);
     }
@@ -100,6 +101,30 @@ final class ReporteController extends Controlador
                 ]);
         }
         return $this->vista('reportes/cancelaciones', ['titulo' => 'Reporte de cancelaciones', 'desde' => $desde, 'hasta' => $hasta, 'd' => $datos, 'imprimir' => $formato === 'imprimir'], $formato === 'imprimir' ? 'impresion' : 'panel');
+    }
+
+    /** Reporte de procedencia de los huéspedes (países y ciudades de origen). */
+    public function procedencia(): Respuesta
+    {
+        [$desde, $hasta] = $this->periodo();
+        $datos = ReporteServicio::procedencia($desde, $hasta);
+        $formato = $this->solicitud->consulta('formato');
+        if (in_array($formato, ['csv', 'xlsx'], true)) {
+            $filas = [];
+            foreach ($datos['ciudades'] as $ciudad => $c) {
+                $filas[] = [$ciudad, $c['pais'], $c['estadias'], $c['personas'], $c['noches'], round($c['ingreso'], 2)];
+            }
+            $cab = ['Ciudad de procedencia', 'País', 'Estadías', 'Personas', 'Noches', 'Ingreso (Bs)'];
+            $this->bitacora('Reportes', 'Exportar reporte', 'Procedencia ' . $desde . ' a ' . $hasta . ' (' . strtoupper($formato) . ')');
+            return $formato === 'csv'
+                ? ExportadorServicio::csv('procedencia', $cab, $filas)
+                : ExportadorServicio::xlsx('procedencia', 'Procedencia de los huéspedes', $cab, $filas, [
+                    'Periodo' => fecha($desde) . ' al ' . fecha($hasta), 'Estadías' => $datos['resumen']['estadias'],
+                    'Nacionales (%)' => round($datos['origen']['nacional']['porcentaje'], 1),
+                    'Extranjeros (%)' => round($datos['origen']['extranjero']['porcentaje'], 1),
+                ]);
+        }
+        return $this->vista('reportes/procedencia', ['titulo' => 'Procedencia de los huéspedes', 'desde' => $desde, 'hasta' => $hasta, 'd' => $datos, 'imprimir' => $formato === 'imprimir'], $formato === 'imprimir' ? 'impresion' : 'panel');
     }
 
     /** Periodo del reporte (por defecto, los últimos 3 meses). */

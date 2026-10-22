@@ -25,7 +25,7 @@ $rutas = [
     '/panel/sobreventa', '/panel/sobreventa?fecha=' . date('Y-m-d', strtotime('+5 days')) . '&ingreso=600', '/panel/sobreventa/historial', '/panel/api/sobreventa/alerta?ingreso=' . date('Y-m-d', strtotime('+4 days')) . '&salida=' . date('Y-m-d', strtotime('+6 days')),
     '/panel/tarifas', '/panel/tarifas?vista=todas', '/panel/tarifas/nueva', '/panel/tarifas/1/editar', '/panel/tarifas/sugerencia', '/panel/tarifas/sugerencia?desde=' . date('Y-m-d', strtotime('+20 days')) . '&categoria=2',
     '/panel/reportes', '/panel/reportes/ocupacion', '/panel/reportes/ocupacion?rango=anio&formato=xlsx', '/panel/reportes/ingresos?rango=mes', '/panel/reportes/ingresos?formato=csv',
-    '/panel/reportes/cancelaciones?rango=trimestre', '/panel/reportes/cancelaciones?formato=imprimir', '/panel/no-existe',
+    '/panel/reportes/cancelaciones?rango=trimestre', '/panel/reportes/cancelaciones?formato=imprimir', '/panel/reportes/procedencia', '/panel/reportes/procedencia?rango=anio&formato=xlsx', '/panel/reportes/procedencia?formato=imprimir', '/panel/no-existe',
 ];
 
 function pedir(string $url, string $cookies, ?array $post = null): array

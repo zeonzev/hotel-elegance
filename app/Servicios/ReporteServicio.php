@@ -141,6 +141,76 @@ final class ReporteServicio
         ];
     }
 
+    /**
+     * Procedencia de los huéspedes: de qué países y ciudades llegan las estadías
+     * del periodo (reservas en curso o finalizadas, según su fecha de ingreso).
+     */
+    public static function procedencia(string $desde, string $hasta): array
+    {
+        $filas = BaseDatos::filas(
+            "SELECT h.nacionalidad, h.ciudad_procedencia, COUNT(*) AS estadias, COUNT(DISTINCT h.id_huesped) AS huespedes,
+                    SUM(r.cantidad_personas) AS personas, SUM(DATEDIFF(r.fecha_salida, r.fecha_ingreso)) AS noches,
+                    SUM(r.monto_total + r.cargos_extra) AS ingreso
+               FROM reserva r JOIN huesped h ON h.id_huesped = r.id_huesped
+              WHERE r.estado IN ('EN_CURSO', 'FINALIZADA') AND r.fecha_ingreso BETWEEN :d AND :h
+              GROUP BY h.nacionalidad, h.ciudad_procedencia",
+            ['d' => $desde, 'h' => $hasta]
+        );
+        $huespedes = (int) BaseDatos::valor(
+            "SELECT COUNT(DISTINCT r.id_huesped) FROM reserva r
+              WHERE r.estado IN ('EN_CURSO', 'FINALIZADA') AND r.fecha_ingreso BETWEEN :d AND :h",
+            ['d' => $desde, 'h' => $hasta]
+        );
+
+        $paises = [];
+        $ciudades = [];
+        $origen = ['nacional' => ['estadias' => 0, 'noches' => 0, 'ingreso' => 0.0], 'extranjero' => ['estadias' => 0, 'noches' => 0, 'ingreso' => 0.0]];
+        foreach ($filas as $f) {
+            $pais = self::pais((string) $f['nacionalidad']);
+            $tipo = $pais === 'Bolivia' ? 'nacional' : 'extranjero';
+            $paises[$pais] ??= ['estadias' => 0, 'noches' => 0, 'ingreso' => 0.0];
+            $paises[$pais]['estadias'] += (int) $f['estadias'];
+            $paises[$pais]['noches'] += (int) $f['noches'];
+            $paises[$pais]['ingreso'] += (float) $f['ingreso'];
+            $ciudad = (string) ($f['ciudad_procedencia'] ?: 'Sin dato');
+            $ciudades[$ciudad] ??= ['pais' => $pais, 'estadias' => 0, 'personas' => 0, 'noches' => 0, 'ingreso' => 0.0];
+            $ciudades[$ciudad]['estadias'] += (int) $f['estadias'];
+            $ciudades[$ciudad]['personas'] += (int) $f['personas'];
+            $ciudades[$ciudad]['noches'] += (int) $f['noches'];
+            $ciudades[$ciudad]['ingreso'] += (float) $f['ingreso'];
+            $origen[$tipo]['estadias'] += (int) $f['estadias'];
+            $origen[$tipo]['noches'] += (int) $f['noches'];
+            $origen[$tipo]['ingreso'] += (float) $f['ingreso'];
+        }
+        uasort($paises, fn ($a, $b) => $b['estadias'] <=> $a['estadias']);
+        uasort($ciudades, fn ($a, $b) => $b['estadias'] <=> $a['estadias']);
+        $total = $origen['nacional']['estadias'] + $origen['extranjero']['estadias'];
+        foreach ($origen as &$o) {
+            $o['porcentaje'] = $total ? $o['estadias'] / $total * 100 : 0;
+            $o['estancia'] = $o['estadias'] ? $o['noches'] / $o['estadias'] : 0;
+        }
+        unset($o);
+        $extranjeros = array_filter($paises, fn ($p, $nombre) => $nombre !== 'Bolivia', ARRAY_FILTER_USE_BOTH);
+        return [
+            'paises' => $paises, 'ciudades' => $ciudades, 'origen' => $origen,
+            'resumen' => [
+                'estadias' => $total, 'huespedes' => $huespedes, 'paises' => count($paises),
+                'pais_extranjero' => array_key_first($extranjeros), 'ciudad' => array_key_first($ciudades),
+            ],
+        ];
+    }
+
+    /** País a partir de la nacionalidad registrada («Peruana» → «Perú»). */
+    public static function pais(string $nacionalidad): string
+    {
+        return [
+            'Boliviana' => 'Bolivia', 'Peruana' => 'Perú', 'Argentina' => 'Argentina', 'Chilena' => 'Chile',
+            'Brasileña' => 'Brasil', 'Colombiana' => 'Colombia', 'Mexicana' => 'México', 'Española' => 'España',
+            'Francesa' => 'Francia', 'Alemana' => 'Alemania', 'Estadounidense' => 'Estados Unidos',
+            'Italiana' => 'Italia', 'Británica' => 'Reino Unido',
+        ][$nacionalidad] ?? ($nacionalidad !== '' ? $nacionalidad : 'Sin dato');
+    }
+
     /** Rangos rápidos para los filtros. */
     public static function rangos(): array
     {

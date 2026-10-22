@@ -162,6 +162,7 @@ return static function (Enrutador $r): void {
             $r->get('/reportes/ocupacion', [ReporteController::class, 'ocupacion']);
             $r->get('/reportes/ingresos', [ReporteController::class, 'ingresos']);
             $r->get('/reportes/cancelaciones', [ReporteController::class, 'cancelaciones']);
+            $r->get('/reportes/procedencia', [ReporteController::class, 'procedencia']);
         });
     });
 };
