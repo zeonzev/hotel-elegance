@@ -26,5 +26,8 @@
     <div class="py-4 px-2">
         <?= $contenido ?>
     </div>
+    <script src="<?= vendor('bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
+    <script src="<?= asset('js/panel.js') ?>"></script>
+    <?= $this->mostrar('scripts') ?>
 </body>
 </html>

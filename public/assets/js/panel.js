@@ -41,7 +41,7 @@
     },
 
     bs(monto, decimales = 2) {
-      return 'Bs ' + Number(monto || 0).toLocaleString('es-BO', { minimumFractionDigits: decimales, maximumFractionDigits: decimales });
+      return 'Bs\u00A0' + Number(monto || 0).toLocaleString('es-BO', { minimumFractionDigits: decimales, maximumFractionDigits: decimales });
     },
 
     numero(valor, decimales = 0) {
