@@ -8,6 +8,7 @@ $grupos = [
         ['/panel', 'bi-grid-1x2', 'Dashboard', 'dashboard.ver', null, true],
         ['/panel/recepcion', 'bi-bell', 'Recepción del día', 'recepcion.operar', $contadores['llegadas_pendientes'] ?: null],
         ['/panel/disponibilidad', 'bi-calendar3-week', 'Disponibilidad', 'reservas.ver'],
+        ['/panel/calendario', 'bi-calendar-month', 'Calendario', 'reservas.ver'],
     ],
     'Reservas' => [
         ['/panel/reservas', 'bi-journal-bookmark', 'Reservas', 'reservas.ver'],

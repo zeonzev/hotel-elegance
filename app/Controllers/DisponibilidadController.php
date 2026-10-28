@@ -51,6 +51,38 @@ final class DisponibilidadController extends Controlador
         ]);
     }
 
+    /** Calendario mensual: ocupación, llegadas y salidas de cada día del mes. */
+    public function calendario(): Respuesta
+    {
+        $mes = (string) $this->solicitud->consulta('mes', date('Y-m'));
+        $mes = preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $mes) ? $mes : date('Y-m');
+        $inicio = "$mes-01";
+        $fin = date('Y-m-t', strtotime($inicio));
+        $dia = $this->fechaValida((string) $this->solicitud->consulta('dia', ''), hoy() >= $inicio && hoy() <= $fin ? hoy() : $inicio);
+        $dia = $dia >= $inicio && $dia <= $fin ? $dia : $inicio;
+
+        $activas = "r.estado IN ('PENDIENTE', 'CONFIRMADA', 'EN_CURSO', 'FINALIZADA')";
+        $contar = fn (string $campo) => BaseDatos::consulta(
+            "SELECT r.$campo, COUNT(*) FROM reserva r WHERE $activas AND r.$campo BETWEEN ? AND ? GROUP BY r.$campo", [$inicio, $fin]
+        )->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+        $reservas = BaseDatos::filas(
+            "SELECT r.id_reserva, r.codigo, r.estado, r.fecha_ingreso, r.fecha_salida, r.cantidad_personas, CONCAT(h.nombres, ' ', h.apellidos) AS huesped,
+                    (SELECT GROUP_CONCAT(COALESCE(x.numero, 'Por asignar') ORDER BY x.numero SEPARATOR ', ') FROM detalle_reserva d LEFT JOIN habitacion x ON x.id_habitacion = d.id_habitacion WHERE d.id_reserva = r.id_reserva) AS habitaciones
+               FROM reserva r JOIN huesped h ON h.id_huesped = r.id_huesped
+              WHERE $activas AND r.fecha_ingreso <= ? AND r.fecha_salida >= ?
+              ORDER BY r.fecha_ingreso = ? DESC, r.fecha_salida = ? DESC, h.apellidos",
+            [$dia, $dia, $dia, $dia]
+        );
+
+        return $this->vista('disponibilidad/calendario', [
+            'titulo' => 'Calendario', 'mes' => $mes, 'inicio' => $inicio, 'fin' => $fin, 'dia' => $dia,
+            'ocupacion' => DisponibilidadServicio::ocupacionPorNoche($inicio, $fin),
+            'llegadas' => $contar('fecha_ingreso'), 'salidas' => $contar('fecha_salida'), 'reservas' => $reservas,
+            'umbral' => (float) SobreventaServicio::configuracion()['umbral_ocupacion'],
+        ]);
+    }
+
     /** API del asistente de reserva (CU-11 paso 2 «include» CU-12, y alerta CU-19). */
     public function api(): Respuesta
     {

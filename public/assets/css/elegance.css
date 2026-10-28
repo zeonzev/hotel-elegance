@@ -733,6 +733,35 @@ hr { border-color: var(--he-borde); opacity: 1; }
 .rack-barra.continua-izq { border-top-left-radius: 0; border-bottom-left-radius: 0; left: 0; }
 .rack-barra.continua-der { border-top-right-radius: 0; border-bottom-right-radius: 0; }
 .rack-mantenimiento { position: absolute; inset: 7px 3px; border-radius: 9px; background: repeating-linear-gradient(45deg, var(--he-rojo-suave), var(--he-rojo-suave) 6px, transparent 6px, transparent 12px); border: 1px dashed var(--he-rojo); opacity: .7; }
+
+/* ---------------------------------------------------------------------
+   Calendario mensual
+   --------------------------------------------------------------------- */
+.calendario { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.calendario-cab { text-align: center; font-size: .68rem; text-transform: uppercase; letter-spacing: .1em; color: var(--he-texto-tenue); padding-bottom: .25rem; }
+.calendario-dia {
+  --p: 0; position: relative; display: flex; flex-direction: column; min-height: 92px; padding: .5rem .6rem; border-radius: 10px;
+  background: color-mix(in srgb, var(--he-oro-500) calc(var(--p) * .4%), var(--he-superficie)); border: 1px solid var(--he-borde);
+  color: var(--he-texto); transition: transform var(--he-transicion), box-shadow var(--he-transicion), border-color var(--he-transicion);
+}
+.calendario-dia:hover { transform: translateY(-1px); box-shadow: var(--he-sombra-sm); border-color: var(--he-borde-fuerte); color: var(--he-texto); }
+.calendario-dia.pasado { opacity: .6; }
+.calendario-dia.alta { border: 2px solid var(--he-rojo); }
+.calendario-dia.seleccionado { outline: 2px solid var(--he-noche-900); outline-offset: 2px; opacity: 1; }
+[data-bs-theme="dark"] .calendario-dia.seleccionado { outline-color: var(--he-oro-400); }
+.calendario-numero { font-weight: 650; font-size: .9rem; }
+.calendario-dia.hoy .calendario-numero { display: inline-flex; align-items: center; justify-content: center; width: 1.6rem; height: 1.6rem; margin: -.2rem 0 0 -.25rem; border-radius: 50%; background: var(--he-noche-900); color: #fff; }
+[data-bs-theme="dark"] .calendario-dia.hoy .calendario-numero { background: var(--he-oro-500); color: var(--he-noche-900); }
+.calendario-ocupacion { margin-top: auto; font-size: 1.05rem; font-weight: 650; line-height: 1.2; font-variant-numeric: tabular-nums; }
+@media (min-width: 1200px) { .calendario-lista { max-height: 640px; overflow-y: auto; } }
+.calendario-movimientos { display: flex; gap: .45rem; font-size: .68rem; font-weight: 600; min-height: 1rem; }
+.calendario-movimientos .llega { color: var(--he-verde); }
+.calendario-movimientos .sale { color: var(--he-azul); }
+.calendario-movimientos i { margin-right: .15rem; }
+.calendario-grupo { display: flex; align-items: center; gap: .4rem; padding: .7rem 1.5rem .4rem; font-size: .68rem; text-transform: uppercase; letter-spacing: .1em; color: var(--he-texto-tenue); border-top: 1px solid var(--he-borde); }
+.calendario-grupo span { padding: .05rem .4rem; border-radius: 6px; background: var(--he-superficie-3); font-size: .66rem; }
+.calendario-reserva { display: flex; gap: .75rem; align-items: center; padding: .6rem 1.5rem; }
+.calendario-reserva + .calendario-reserva { border-top: 1px dashed var(--he-borde); }
 .rack-pie { position: sticky; left: 0; z-index: 2; background: var(--he-superficie-2); border-right: 1px solid var(--he-borde); padding: .55rem 1rem; font-size: .72rem; font-weight: 600; color: var(--he-texto-suave); }
 .rack-ocupacion { background: var(--he-superficie-2); padding: .45rem .25rem; text-align: center; font-size: .72rem; font-weight: 650; border-right: 1px dashed var(--he-borde); }
 .ocup-alta { color: var(--he-rojo); }
@@ -856,6 +885,11 @@ a.item-lista:hover { background: var(--he-superficie-2); color: var(--he-texto);
   .buscador kbd, .usuario-datos { display: none; }
   .tarjeta-cuerpo { padding: 1.15rem; }
   .tarjeta-encabezado, .filtros, .paginacion { padding-left: 1.15rem; padding-right: 1.15rem; }
+  .calendario { gap: 3px; }
+  .calendario-dia { min-height: 62px; padding: .35rem .3rem; border-radius: 7px; }
+  .calendario-ocupacion { font-size: .78rem; }
+  .calendario-movimientos { display: none; }
+  .calendario-reserva, .calendario-grupo { padding-left: 1.15rem; padding-right: 1.15rem; }
   .tabla thead th:first-child, .tabla tbody td:first-child, .tabla tfoot td:first-child { padding-left: 1.15rem; }
   .tabla thead th:last-child, .tabla tbody td:last-child { padding-right: 1.15rem; }
   .piso { grid-template-columns: 1fr; padding: 1rem 1.15rem; }

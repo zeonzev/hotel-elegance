@@ -134,6 +134,7 @@ return static function (Enrutador $r): void {
         $r->get('/recepcion', [RecepcionController::class, 'index'], ['permiso:recepcion.operar']);
         $r->get('/cobros', [RecepcionController::class, 'saldos'], ['permiso:recepcion.operar']);
         $r->get('/disponibilidad', [DisponibilidadController::class, 'index'], ['permiso:reservas.ver']);
+        $r->get('/calendario', [DisponibilidadController::class, 'calendario'], ['permiso:reservas.ver']);
         $r->get('/api/disponibilidad', [DisponibilidadController::class, 'api'], ['permiso:reservas.ver']);
         $r->get('/solicitudes', [SolicitudController::class, 'index'], ['permiso:solicitudes.gestionar']);
         $r->post('/solicitudes/{id}/descartar', [SolicitudController::class, 'descartar'], ['permiso:solicitudes.gestionar']);
