@@ -35,6 +35,31 @@ final class RecepcionController extends Controlador
         ]);
     }
 
+    /** Cobros pendientes: reservas activas con saldo por cobrar. */
+    public function saldos(): Respuesta
+    {
+        $vista = (string) $this->solicitud->consulta('vista', 'todas');
+        $vista = in_array($vista, ['todas', 'alojados', 'sin_anticipo'], true) ? $vista : 'todas';
+        $todas = ReservaRepositorio::saldosPendientes('todas');
+        $lista = $vista === 'todas' ? $todas : ReservaRepositorio::saldosPendientes($vista);
+        if ($this->solicitud->consulta('formato') === 'csv') {
+            $filas = array_map(fn ($r) => [
+                $r['codigo'], $r['huesped'], $r['telefono'], $r['fecha_ingreso'], $r['fecha_salida'], estado_info($r['estado'])[0],
+                (float) $r['monto_total'] + (float) $r['cargos_extra'], (float) $r['pagado'], $r['saldo'],
+            ], $lista);
+            return \App\Servicios\ExportadorServicio::csv('cobros-pendientes', ['Código', 'Huésped', 'Teléfono', 'Ingreso', 'Salida', 'Estado', 'Total (Bs)', 'Pagado (Bs)', 'Saldo (Bs)'], $filas);
+        }
+        $alojados = array_filter($todas, fn ($r) => $r['estado'] === 'EN_CURSO');
+        return $this->vista('recepcion/saldos', [
+            'titulo' => 'Cobros pendientes', 'vista' => $vista, 'lista' => $lista,
+            'resumen' => [
+                'total' => array_sum(array_column($todas, 'saldo')), 'reservas' => count($todas),
+                'alojados' => count($alojados), 'saldo_alojados' => array_sum(array_column($alojados, 'saldo')),
+                'sin_anticipo' => count(ReservaRepositorio::saldosPendientes('sin_anticipo')),
+            ],
+        ]);
+    }
+
     public function formularioCheckin(string $id): Respuesta
     {
         $reserva = ReservaServicio::obtener((int) $id);

@@ -21,7 +21,7 @@ $rutas = [
     '/panel/categorias', '/panel/categorias/nueva', '/panel/categorias/1/editar',
     '/panel/reservas', '/panel/reservas?estado=CONFIRMADA&periodo=proximas', '/panel/reservas?formato=csv', '/panel/reservas/nueva', '/panel/reservas/nueva?solicitud=1',
     '/panel/reservas/1', '/panel/reservas/1/recibo', '/panel/recepcion', '/panel/disponibilidad', '/panel/disponibilidad?ingreso=2030-01-01&salida=2030-01-03',
-    '/panel/api/disponibilidad?ingreso=' . date('Y-m-d', strtotime('+4 days')) . '&salida=' . date('Y-m-d', strtotime('+6 days')), '/panel/solicitudes', '/panel/solicitudes?pestana=mensajes',
+    '/panel/api/disponibilidad?ingreso=' . date('Y-m-d', strtotime('+4 days')) . '&salida=' . date('Y-m-d', strtotime('+6 days')), '/panel/solicitudes', '/panel/solicitudes?pestana=mensajes', '/panel/cobros', '/panel/cobros?vista=alojados', '/panel/cobros?vista=sin_anticipo&formato=csv',
     '/panel/sobreventa', '/panel/sobreventa?fecha=' . date('Y-m-d', strtotime('+5 days')) . '&ingreso=600', '/panel/sobreventa/historial', '/panel/api/sobreventa/alerta?ingreso=' . date('Y-m-d', strtotime('+4 days')) . '&salida=' . date('Y-m-d', strtotime('+6 days')),
     '/panel/tarifas', '/panel/tarifas?vista=todas', '/panel/tarifas/nueva', '/panel/tarifas/1/editar', '/panel/tarifas/sugerencia', '/panel/tarifas/sugerencia?desde=' . date('Y-m-d', strtotime('+20 days')) . '&categoria=2',
     '/panel/reportes', '/panel/reportes/ocupacion', '/panel/reportes/ocupacion?rango=anio&formato=xlsx', '/panel/reportes/ingresos?rango=mes', '/panel/reportes/ingresos?formato=csv',

@@ -132,6 +132,7 @@ return static function (Enrutador $r): void {
         $r->get('/reservas/{id}/checkout', [RecepcionController::class, 'formularioCheckout'], ['permiso:recepcion.operar']);
         $r->post('/reservas/{id}/checkout', [RecepcionController::class, 'checkout'], ['permiso:recepcion.operar']);
         $r->get('/recepcion', [RecepcionController::class, 'index'], ['permiso:recepcion.operar']);
+        $r->get('/cobros', [RecepcionController::class, 'saldos'], ['permiso:recepcion.operar']);
         $r->get('/disponibilidad', [DisponibilidadController::class, 'index'], ['permiso:reservas.ver']);
         $r->get('/api/disponibilidad', [DisponibilidadController::class, 'api'], ['permiso:reservas.ver']);
         $r->get('/solicitudes', [SolicitudController::class, 'index'], ['permiso:solicitudes.gestionar']);

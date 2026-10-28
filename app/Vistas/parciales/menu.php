@@ -11,6 +11,7 @@ $grupos = [
     ],
     'Reservas' => [
         ['/panel/reservas', 'bi-journal-bookmark', 'Reservas', 'reservas.ver'],
+        ['/panel/cobros', 'bi-cash-coin', 'Cobros pendientes', 'recepcion.operar'],
         ['/panel/solicitudes', 'bi-envelope-paper', 'Solicitudes web', 'solicitudes.gestionar', $contadores['solicitudes'] ?: null],
         ['/panel/huespedes', 'bi-people', 'Huéspedes', 'huespedes.ver'],
     ],

@@ -92,6 +92,37 @@ final class ReservaRepositorio
         );
     }
 
+    /**
+     * Reservas activas con saldo por cobrar (total + cargos − pagado > 0).
+     * $vista: 'todas' | 'alojados' (en curso) | 'sin_anticipo' (llegan en 7 días sin ningún pago).
+     */
+    public static function saldosPendientes(string $vista = 'todas'): array
+    {
+        $filtro = match ($vista) {
+            'alojados' => "AND r.estado = 'EN_CURSO'",
+            'sin_anticipo' => "AND r.estado IN ('PENDIENTE', 'CONFIRMADA') AND r.fecha_ingreso <= CURDATE() + INTERVAL 7 DAY HAVING pagado = 0",
+            default => '',
+        };
+        // HAVING sólo aplica a la vista «sin_anticipo»; en las demás se filtra el saldo en PHP
+        $filas = BaseDatos::filas(
+            "SELECT r.id_reserva, r.codigo, r.estado, r.fecha_ingreso, r.fecha_salida, r.monto_total, r.cargos_extra, r.es_sobreventa,
+                    CONCAT(h.nombres, ' ', h.apellidos) AS huesped, h.telefono, h.correo, c.nombre AS canal,
+                    (SELECT COALESCE(SUM(p.monto), 0) FROM pago p WHERE p.id_reserva = r.id_reserva) AS pagado,
+                    (SELECT GROUP_CONCAT(COALESCE(x.numero, 'Por asignar') ORDER BY x.numero SEPARATOR ', ')
+                       FROM detalle_reserva d LEFT JOIN habitacion x ON x.id_habitacion = d.id_habitacion WHERE d.id_reserva = r.id_reserva) AS habitaciones
+               FROM reserva r
+               JOIN huesped h ON h.id_huesped = r.id_huesped
+               JOIN canal_reserva c ON c.id_canal = r.id_canal
+              WHERE r.estado IN ('PENDIENTE', 'CONFIRMADA', 'EN_CURSO') $filtro
+              ORDER BY r.estado = 'EN_CURSO' DESC, r.fecha_ingreso, r.id_reserva"
+        );
+        foreach ($filas as &$r) {
+            $r['saldo'] = round((float) $r['monto_total'] + (float) $r['cargos_extra'] - (float) $r['pagado'], 2);
+        }
+        unset($r);
+        return array_values(array_filter($filas, fn (array $r) => $r['saldo'] > 0.009));
+    }
+
     public static function canales(): array
     {
         return BaseDatos::filas('SELECT * FROM canal_reserva WHERE estado = 1 ORDER BY id_canal');
