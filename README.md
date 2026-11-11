@@ -63,6 +63,4 @@ tests/      pruebas
 
 ## Pruebas
 
-```bash
 C:\xampp\php\php.exe tests\ejecutar.php
-```
