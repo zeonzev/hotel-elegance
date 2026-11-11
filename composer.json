@@ -1,0 +1,23 @@
+{
+    "name": "zeonzev/hotel-elegance",
+    "description": "Sistema de Administración Web para el Seguimiento de Reservas - Caso Hotel Elegance",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Pruebas\\": "tests/Unitarias/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

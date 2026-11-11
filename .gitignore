@@ -16,3 +16,7 @@ Thumbs.db
 desktop.ini
 .vscode/
 .idea/
+
+# Dependencias de Composer y caché de PHPUnit
+/vendor/
+.phpunit.cache/
