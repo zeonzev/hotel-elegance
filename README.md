@@ -12,7 +12,7 @@ El informe del proyecto está en `docs/informe.pdf`.
 ## Tecnologías
 
 - PHP 8 con patrón MVC
-- MySQL / MariaDB
+- MySQL
 - HTML, CSS, JavaScript y Bootstrap 5
 - Chart.js para los gráficos
 
