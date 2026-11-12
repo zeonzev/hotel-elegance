@@ -12,7 +12,11 @@ El informe del proyecto está en `docs/informe.pdf`.
 ## Tecnologías
 
 - PHP 8 con patrón MVC
+<<<<<<< HEAD
 - MySQL
+=======
+- MySQ
+>>>>>>> 357a29d (Agrega carpeta de pruebas unitarias)
 - HTML, CSS, JavaScript y Bootstrap 5
 - Chart.js para los gráficos
 
