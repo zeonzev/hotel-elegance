@@ -3,7 +3,7 @@
 Sistema web para el seguimiento de reservas del Hotel Elegance (La Paz, Bolivia).
 Proyecto de la materia Análisis y Diseño II – UNIFRANZ, gestión 2026.
 
-**Integrantes:** Israel Javier Quispe Escobar, Ademar Rodríguez Mamani, Fernando Jhamil Quispe Ramos y Jonathan Ticona Pérez (Scrum Master).
+**Integrantes:** Israel Javier Quispe Escobar, Ademar Rodríguez Mamani, Fernando Jhamil Quispe Ramos y Jonathan Ticona Pérez.
 
 **Docentes:** Ing. Hilaria Adima Vasquez Duran, Ing. Juan Carlos Cuellar Sonco e Ing. Rubén Gonzalo Soria Soria.
 
