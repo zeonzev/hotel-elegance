@@ -13,7 +13,6 @@ El informe del proyecto está en `docs/informe.pdf`.
 
 - PHP 8 con patrón MVC
 - MySQL
-- MySQ
 - HTML, CSS, JavaScript y Bootstrap 5
 - Chart.js para los gráficos
 
