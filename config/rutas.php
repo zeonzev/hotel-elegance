@@ -13,6 +13,7 @@ use App\Controllers\DisponibilidadController;
 use App\Controllers\HabitacionController;
 use App\Controllers\HuespedController;
 use App\Controllers\InstaladorController;
+use App\Controllers\MarkovController;
 use App\Controllers\PerfilController;
 use App\Controllers\PersonalController;
 use App\Controllers\RecepcionController;
@@ -147,6 +148,9 @@ return static function (Enrutador $r): void {
         $r->post('/sobreventa/evaluar', [SobreventaController::class, 'guardarEvaluacion'], ['permiso:sobreventa.calcular']);
         $r->get('/sobreventa/historial', [SobreventaController::class, 'historial'], ['permiso:sobreventa.ver']);
         $r->get('/api/sobreventa/alerta', [SobreventaController::class, 'alerta'], ['permiso:sobreventa.alertas']);
+
+        // Investigación Operativa II · Cadenas de Markov del ciclo de una reserva
+        $r->get('/markov', [MarkovController::class, 'index'], ['permiso:markov.ver']);
 
         // Sprint 6 · Estimación de demanda y tarifas (CU-20, CU-21)
         $r->get('/tarifas', [TarifaController::class, 'index'], ['permiso:tarifas.ver']);

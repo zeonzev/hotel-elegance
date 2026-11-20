@@ -151,4 +151,111 @@ final class ModeloDecision
         }
         return ['filas' => $filas, 'optimo' => $optimo];
     }
+
+    /**
+     * Probabilidad de cada estado de la naturaleza del Hito 3:
+     * E_j = "faltan j huéspedes" con el hotel lleno (cap reservas, cada una falta con prob. p).
+     * El último estado agrupa "K o más" para que las probabilidades sumen 1.
+     */
+    public static function probabilidadesNoShow(int $cap, float $pAusencia, int $maxExtra): array
+    {
+        $dist = self::binomial($cap, $pAusencia);
+        $probs = [];
+        for ($j = 0; $j < $maxExtra; $j++) {
+            $probs[$j] = $dist[$j] ?? 0.0;
+        }
+        $probs[$maxExtra] = max(0.0, 1 - array_sum($probs));
+        return $probs;
+    }
+
+    /**
+     * Matriz de pagos del Hito 3: alternativa A_k = aceptar k reservas extra,
+     * estado E_j = faltan j huéspedes.
+     *   Pago(k, j) = I · mín(k, j) − C · máx(0, k − j)
+     */
+    public static function matrizPagos(int $maxExtra, float $ingreso, float $costo): array
+    {
+        $m = [];
+        for ($k = 0; $k <= $maxExtra; $k++) {
+            for ($j = 0; $j <= $maxExtra; $j++) {
+                $m[$k][$j] = $ingreso * min($k, $j) - $costo * max(0, $k - $j);
+            }
+        }
+        return $m;
+    }
+
+    /**
+     * Criterios de decisión sobre una matriz de pagos:
+     *  - bajo riesgo: valor esperado (VE) y valor esperado de la información perfecta (VEIP)
+     *  - bajo incertidumbre: Maximax, Maximin, Laplace, Hurwicz (α) y Savage (mínimo arrepentimiento)
+     * Ante un empate se elige la alternativa más conservadora (menos reservas extra).
+     */
+    public static function criterios(array $pagos, array $probs, float $alfa = 0.6): array
+    {
+        $alfa = min(1.0, max(0.0, $alfa));
+        $estados = array_keys($probs);
+        // Mejor pago de cada estado (columna): sirve para Savage y para el VEIP
+        $mejorEstado = [];
+        foreach ($estados as $j) {
+            $mejorEstado[$j] = max(array_column($pagos, $j));
+        }
+
+        $filas = [];
+        foreach ($pagos as $k => $fila) {
+            $ve = 0.0;
+            foreach ($estados as $j) {
+                $ve += $probs[$j] * $fila[$j];
+            }
+            $arrepentimientos = array_map(fn ($j) => $mejorEstado[$j] - $fila[$j], $estados);
+            $filas[$k] = [
+                'pagos'          => $fila,
+                've'             => $ve,
+                'maximax'        => max($fila),
+                'maximin'        => min($fila),
+                'laplace'        => array_sum($fila) / count($fila),
+                'hurwicz'        => $alfa * max($fila) + (1 - $alfa) * min($fila),
+                'arrepentimiento' => array_combine($estados, $arrepentimientos),
+                'savage'         => max($arrepentimientos),
+            ];
+        }
+
+        $elegir = function (string $criterio, bool $maximizar = true) use ($filas): int {
+            $mejor = null;
+            foreach ($filas as $k => $f) {
+                if ($mejor === null || ($maximizar ? $f[$criterio] > $filas[$mejor][$criterio] + 1e-9 : $f[$criterio] < $filas[$mejor][$criterio] - 1e-9)) {
+                    $mejor = $k;
+                }
+            }
+            return $mejor;
+        };
+
+        $optimoVe = $elegir('ve');
+        $veConInformacion = 0.0;
+        foreach ($estados as $j) {
+            $veConInformacion += $probs[$j] * $mejorEstado[$j];
+        }
+
+        return [
+            'filas'      => $filas,
+            'mejor_estado' => $mejorEstado,
+            'alfa'       => $alfa,
+            'elegida'    => [
+                've'      => $optimoVe,
+                'maximax' => $elegir('maximax'),
+                'maximin' => $elegir('maximin'),
+                'laplace' => $elegir('laplace'),
+                'hurwicz' => $elegir('hurwicz'),
+                'savage'  => $elegir('savage', false),
+            ],
+            've_optimo'  => $filas[$optimoVe]['ve'],
+            've_ci'      => $veConInformacion,
+            'veip'       => $veConInformacion - $filas[$optimoVe]['ve'],
+        ];
+    }
+
+    /** Regla del Hito 3: conviene aceptar una reserva extra si p ≥ C / (I + C). */
+    public static function umbralAceptar(float $ingreso, float $costo): float
+    {
+        return $ingreso + $costo > 0 ? $costo / ($ingreso + $costo) : 1.0;
+    }
 }

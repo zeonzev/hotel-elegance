@@ -22,6 +22,7 @@ $grupos = [
     ],
     'Inteligencia' => [
         ['/panel/sobreventa', 'bi-shield-check', 'Política de sobreventa', 'sobreventa.ver', $contadores['alertas_sobreventa'] ? ['valor' => $contadores['alertas_sobreventa'], 'alerta' => true] : null],
+        ['/panel/markov', 'bi-diagram-3', 'Cadenas de Markov', 'markov.ver'],
         ['/panel/tarifas', 'bi-tags', 'Tarifas y demanda', 'tarifas.ver'],
         ['/panel/reportes', 'bi-bar-chart-line', 'Reportes', 'reportes.ver'],
     ],

@@ -146,10 +146,11 @@ final class SobreventaServicio
      * CU-18: evaluación completa para una noche.
      * Compara VE(aceptar) con VE(rechazar) = 0 y aplica el límite de reservas extra (flujo 5a).
      */
-    public static function evaluar(string $fecha, ?float $ingreso = null, ?array $config = null, ?int $reservasAdicionales = 0): array
+    public static function evaluar(string $fecha, ?float $ingreso = null, ?array $config = null, ?int $reservasAdicionales = 0, string $fuente = 'HISTORICO', ?float $alfa = null): array
     {
         $config ??= self::configuracion();
-        $tasas = self::tasaVigente($config);
+        $fuente = $fuente === 'MARKOV' ? 'MARKOV' : 'HISTORICO';
+        $tasas = $fuente === 'MARKOV' ? self::tasaMarkov($config) : self::tasaVigente($config);
         $capacidad = DisponibilidadServicio::capacidad();
         $reservas = self::reservasEnNoche($fecha) + (int) $reservasAdicionales;
         $ingreso ??= self::ingresoReferencia($fecha);
@@ -164,6 +165,12 @@ final class SobreventaServicio
 
         $extrasActuales = max(0, $reservas - $capacidad);
         $maxExtra = (int) $config['max_reservas_extra'];
+
+        // Matriz de pagos y criterios del Hito 3: A0..AK (reservas extra) × E0..EK (huéspedes que faltan)
+        $alternativas = max(1, $maxExtra);
+        $alfa ??= (float) ajuste('decision_hurwicz_alfa', 0.6);
+        $probEstados = ModeloDecision::probabilidadesNoShow($capacidad, $tasas['p_ausencia'], $alternativas);
+        $criterios = ModeloDecision::criterios(ModeloDecision::matrizPagos($alternativas, $ingreso, $costo), $probEstados, $alfa);
         $ocupacion = $capacidad > 0 ? round($reservas / $capacidad * 100, 1) : 100.0;
         $limiteAlcanzado = $extrasActuales >= $maxExtra;
         $decision = ($adicional['ve_aceptar'] > 0 && !$limiteAlcanzado) ? 'ACEPTAR' : 'RECHAZAR';
@@ -202,6 +209,30 @@ final class SobreventaServicio
             'motivo'           => $motivo,
             'meses_historial'  => $tasas['meses'],
             'incluir_cancelaciones' => (bool) $config['incluir_cancelaciones'],
+            'fuente'           => $fuente,
+            'prob_estados'     => $probEstados,
+            'criterios'        => $criterios,
+            'umbral_p'         => ModeloDecision::umbralAceptar($ingreso, $costo),
+        ];
+    }
+
+    /**
+     * Probabilidades del modelo tomadas de la Cadena de Markov (en lugar de la tasa mensual
+     * de CU-17): probabilidad de absorción en No presentada / Cancelada partiendo de Confirmada.
+     */
+    public static function tasaMarkov(?array $config = null): array
+    {
+        $config ??= self::configuracion();
+        $m = MarkovServicio::probabilidadesParaDecision((int) $config['meses_historial']);
+        $pAusencia = $m['p_no_show'] + (!empty($config['incluir_cancelaciones']) ? $m['p_cancelacion'] : 0);
+        return [
+            'p_no_show'     => $m['p_no_show'],
+            'p_cancelacion' => $m['p_cancelacion'],
+            'p_ausencia'    => min(0.95, $pAusencia),
+            'q'             => max(0.05, 1 - $pAusencia),
+            'meses'         => (int) $config['meses_historial'],
+            'reservas'      => $m['reservas'],
+            'demostrativo'  => $m['demostrativo'],
         ];
     }
 

@@ -5,7 +5,7 @@
  *
  *  - Administrador: gestiona todo.
  *  - Recepcionista: opera huéspedes, reservas, check-in/out y estados de habitación.
- *  - Gerente: dashboard, reportes, política de sobreventa y tarifas (consulta).
+ *  - Gerente: dashboard, reportes, política de sobreventa, cadenas de Markov y tarifas (consulta).
  */
 
 $adm = 'Administrador';
@@ -42,6 +42,9 @@ return [
     'sobreventa.configurar'   => [$adm],
     'sobreventa.autorizar'    => [$adm],
     'sobreventa.alertas'      => [$adm, $rec, $ger],
+
+    // Cadenas de Markov (aporte de Investigación Operativa II)
+    'markov.ver'              => [$adm, $ger],
 
     // Estimación de demanda y tarifas (Sprint 6)
     'tarifas.ver'             => [$adm, $ger],

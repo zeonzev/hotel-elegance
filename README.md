@@ -46,7 +46,8 @@ Si MySQL tiene contraseña o usa otro puerto, copiar `.env.example` como `.env` 
 2. **Gestión de huéspedes** (CU-05 a CU-07): registro, modificación e historial de estadías.
 3. **Gestión de habitaciones** (CU-08 a CU-10): habitaciones, categorías y estado de cada habitación.
 4. **Gestión de reservas** (CU-11 a CU-16): registrar, consultar disponibilidad, modificar, cancelar, check-in y check-out.
-5. **Política de sobreventa** (CU-17 a CU-19): tasas de cancelación y no-show, valor esperado y alerta de sobreventa.
+5. **Política de sobreventa** (CU-17 a CU-19): tasas de cancelación y no-show, valor esperado, criterios de decisión y alerta de sobreventa.
+   Incluye **Cadenas de Markov** del ciclo de una reserva, que entregan la probabilidad de no-show al modelo de decisión.
 6. **Estimación de demanda y tarifas** (CU-20 y CU-21): tarifas por temporada y tarifa sugerida.
 7. **Reportes** (CU-22 a CU-24): ocupación, ingresos y cancelaciones.
 

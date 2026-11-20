@@ -24,7 +24,10 @@ final class SobreventaController extends Controlador
         $porDefecto = $critica !== null ? array_keys($alertas)[$critica] : date('Y-m-d', strtotime('+1 day'));
         $fecha = $this->fecha((string) $this->solicitud->consulta('fecha', ''), $porDefecto);
         $ingreso = $this->solicitud->consulta('ingreso');
-        $evaluacion = SobreventaServicio::evaluar($fecha, is_numeric($ingreso) && $ingreso > 0 ? (float) $ingreso : null, $config);
+        // Fuente de las probabilidades: tasa mensual (CU-17) o Cadena de Markov
+        $fuente = $this->solicitud->consulta('fuente') === 'MARKOV' ? 'MARKOV' : 'HISTORICO';
+        $alfa = $this->alfa($this->solicitud->consulta('alfa'));
+        $evaluacion = SobreventaServicio::evaluar($fecha, is_numeric($ingreso) && $ingreso > 0 ? (float) $ingreso : null, $config, 0, $fuente, $alfa);
         return $this->vista('sobreventa/index', [
             'titulo' => 'Política de sobreventa', 'config' => $config, 'tasas' => SobreventaServicio::tasas(12),
             'vigente' => SobreventaServicio::tasaVigente($config), 'alertas' => $alertas, 'e' => $evaluacion,
@@ -55,10 +58,12 @@ final class SobreventaController extends Controlador
     {
         $fecha = $this->fecha((string) $this->solicitud->entrada('fecha', ''), date('Y-m-d'));
         $ingreso = $this->solicitud->entrada('ingreso');
-        $e = SobreventaServicio::evaluar($fecha, is_numeric($ingreso) && $ingreso > 0 ? (float) $ingreso : null);
+        $fuente = $this->solicitud->entrada('fuente') === 'MARKOV' ? 'MARKOV' : 'HISTORICO';
+        $e = SobreventaServicio::evaluar($fecha, is_numeric($ingreso) && $ingreso > 0 ? (float) $ingreso : null, null, 0, $fuente);
         SobreventaServicio::guardarEvaluacion($e);
-        $this->bitacora('Sobreventa', 'Calcular valor esperado', 'Evaluación del ' . fecha($fecha) . ': ' . $e['decision'] . ' (VE ' . bs($e['ve_aceptar']) . ')');
-        return $this->redirigir('/panel/sobreventa?fecha=' . $fecha, 'Evaluación guardada: la recomendación es ' . $e['decision'] . '.');
+        $origen = $fuente === 'MARKOV' ? ', probabilidades de Markov' : '';
+        $this->bitacora('Sobreventa', 'Calcular valor esperado', 'Evaluación del ' . fecha($fecha) . ': ' . $e['decision'] . ' (VE ' . bs($e['ve_aceptar']) . $origen . ')');
+        return $this->redirigir('/panel/sobreventa?fecha=' . $fecha . ($fuente === 'MARKOV' ? '&fuente=MARKOV' : ''), 'Evaluación guardada: la recomendación es ' . $e['decision'] . '.');
     }
 
     public function historial(): Respuesta
@@ -73,6 +78,12 @@ final class SobreventaController extends Controlador
         $salida = $this->fecha((string) $this->solicitud->consulta('salida', ''), date('Y-m-d', strtotime($ingreso . ' +1 day')));
         $a = $salida > $ingreso ? SobreventaServicio::alertaParaRango($ingreso, $salida) : null;
         return $this->json(['ok' => true, 'alerta' => $a ? array_intersect_key($a, array_flip(['fecha', 'ocupacion', 'umbral', 've_aceptar', 've_simple', 'decision', 'motivo', 'nivel_optimo'])) : null]);
+    }
+
+    /** Coeficiente de optimismo de Hurwicz (entre 0 y 1); null = valor por defecto. */
+    private function alfa(mixed $valor): ?float
+    {
+        return is_numeric($valor) ? min(1.0, max(0.0, (float) $valor)) : null;
     }
 
     private function fecha(string $f, string $porDefecto): string

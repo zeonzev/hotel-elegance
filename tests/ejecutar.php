@@ -17,9 +17,11 @@ use App\Core\Autenticacion;
 use App\Core\BaseDatos;
 use App\Core\ExcepcionValidacion;
 use App\Core\Validador;
+use App\Servicios\CadenaMarkov;
 use App\Servicios\CuentaServicio;
 use App\Servicios\DemandaServicio;
 use App\Servicios\DisponibilidadServicio;
+use App\Servicios\MarkovServicio;
 use App\Servicios\ModeloDecision;
 use App\Servicios\ReservaServicio;
 use App\Servicios\SobreventaServicio;
@@ -101,6 +103,123 @@ prueba('Las probabilidades de la matriz de decisión suman 1', function () {
 prueba('Nivel óptimo: con no-show 0 no conviene sobrevender; con no-show alto sí', function () {
     afirmar(ModeloDecision::niveles(23, 1.0, 500, 650, 6)['optimo'] === 0);
     afirmar(ModeloDecision::niveles(23, 0.8, 500, 650, 8)['optimo'] >= 2);
+});
+
+prueba('Matriz de pagos del Hito 3 (I = 250, C = 400)', function () {
+    $m = ModeloDecision::matrizPagos(3, 250, 400);
+    afirmar($m[1] === [-400.0, 250.0, 250.0, 250.0], 'Fila A1 incorrecta');
+    afirmar($m[3] === [-1200.0, -550.0, 100.0, 750.0], 'Fila A3 incorrecta');
+});
+prueba('Criterios del Hito 3: VE elige A1 (Bs 87,5), VEIP = Bs 237,5', function () {
+    $c = ModeloDecision::criterios(ModeloDecision::matrizPagos(3, 250, 400), [0.25, 0.35, 0.25, 0.15], 0.6);
+    cerca($c['filas'][1]['ve'], 87.5);
+    cerca($c['filas'][2]['ve'], -52.5);
+    cerca($c['filas'][3]['ve'], -355);
+    afirmar($c['elegida']['ve'] === 1);
+    cerca($c['ve_ci'], 325);
+    cerca($c['veip'], 237.5);
+});
+prueba('Criterios bajo incertidumbre del Hito 3: Maximax A3, Maximin A0, Laplace A1, Hurwicz A0, Savage A1', function () {
+    $c = ModeloDecision::criterios(ModeloDecision::matrizPagos(3, 250, 400), [0.25, 0.35, 0.25, 0.15], 0.6);
+    afirmar($c['elegida']['maximax'] === 3 && $c['elegida']['maximin'] === 0);
+    afirmar($c['elegida']['laplace'] === 1 && $c['elegida']['hurwicz'] === 0 && $c['elegida']['savage'] === 1);
+    cerca($c['filas'][2]['laplace'], 12.5);
+    cerca($c['filas'][1]['hurwicz'], -10);
+    afirmar(array_column($c['filas'], 'savage') === [750.0, 500.0, 800.0, 1200.0], 'Arrepentimientos máximos incorrectos');
+});
+prueba('Las probabilidades de los estados de no-show suman 1', function () {
+    $p = ModeloDecision::probabilidadesNoShow(24, 0.08, 3);
+    afirmar(count($p) === 4);
+    cerca(array_sum($p), 1.0, 1e-9);
+    cerca($p[0], 0.92 ** 24, 1e-12);
+});
+prueba('Regla del Hito 3: aceptar si p ≥ C / (I + C) = 400 / 650', function () {
+    cerca(ModeloDecision::umbralAceptar(250, 400), 400 / 650);
+});
+
+// ======================================================================
+echo "\nCadenas de Markov (IO II · ciclo de una reserva)\n";
+// ======================================================================
+prueba('Matriz desde conteos: p_ij = n_ij / Σ n_ik y filas que suman 1', function () {
+    $n = CadenaMarkov::conteosVacios();
+    $n['C'] = ['C' => 10, 'H' => 75, 'X' => 10, 'N' => 5, 'F' => 0];
+    $n['H'] = ['C' => 0, 'H' => 20, 'X' => 0, 'N' => 0, 'F' => 80];
+    $p = CadenaMarkov::matrizDesdeConteos($n);
+    cerca($p['C']['H'], 0.75);
+    cerca($p['H']['F'], 0.80);
+    afirmar($p['X']['X'] === 1.0 && $p['F']['F'] === 1.0, 'Los absorbentes deben tener p_ii = 1');
+    afirmar(CadenaMarkov::filasSumanUno($p));
+});
+prueba('Segundo Aporte: V2 y V3 partiendo de Confirmada', function () {
+    $v = CadenaMarkov::evolucion(CadenaMarkov::vectorInicial('C'), MarkovServicio::MATRIZ_DEMOSTRATIVA, 3);
+    cerca($v[2]['F'], 0.60);
+    cerca($v[2]['H'], 0.225);
+    cerca($v[2]['X'], 0.11);
+    cerca($v[3]['F'], 0.78);
+    cerca($v[3]['N'], 0.0555);
+});
+prueba('V_n = V_0 · P^n coincide con la evolución paso a paso', function () {
+    $p = MarkovServicio::MATRIZ_DEMOSTRATIVA;
+    $p3 = CadenaMarkov::potencia($p, 3);
+    $v = CadenaMarkov::evolucion(CadenaMarkov::vectorInicial('C'), $p, 3);
+    foreach ($p3['C'] as $j => $valor) {
+        cerca($valor, $v[3][$j], 1e-12);
+    }
+});
+prueba('Segundo Aporte: absorción desde C → F 83,33 %, X 11,11 %, N 5,56 %', function () {
+    $b = CadenaMarkov::absorcion(MarkovServicio::MATRIZ_DEMOSTRATIVA)['B'];
+    cerca($b['C']['F'], 0.8333, 0.0001);
+    cerca($b['C']['X'], 0.1111, 0.0001);
+    cerca($b['C']['N'], 0.0556, 0.0001);
+    cerca($b['H']['F'], 1.0, 1e-9);
+});
+prueba('Matriz fundamental N = (I − Q)^-1 y tiempo esperado t = N·1', function () {
+    $a = CadenaMarkov::absorcion(MarkovServicio::MATRIZ_DEMOSTRATIVA);
+    cerca($a['N']['C']['C'], 1 / 0.9);
+    cerca($a['N']['H']['H'], 1 / 0.8);
+    cerca($a['N']['C']['H'], (0.75 / 0.9) / 0.8);
+    cerca($a['t']['C'], 1 / 0.9 + (0.75 / 0.9) / 0.8);
+});
+prueba('Inversa por Gauss-Jordan: A · A^-1 = I', function () {
+    $m = [[4.0, 7.0], [2.0, 6.0]];
+    $i = CadenaMarkov::multiplicar($m, CadenaMarkov::inversa($m));
+    cerca($i[0][0], 1); cerca($i[0][1], 0); cerca($i[1][0], 0); cerca($i[1][1], 1);
+    afirmar(CadenaMarkov::inversa([[1.0, 2.0], [2.0, 4.0]]) === null, 'Una matriz singular no tiene inversa');
+});
+prueba('Estado por día de una reserva: C → H → F', function () {
+    $r = ['registro' => '2026-03-01', 'estado' => 'FINALIZADA', 'fecha_ingreso' => '2026-03-05', 'fecha_salida' => '2026-03-07',
+          'checkin' => '2026-03-05', 'checkout' => '2026-03-07', 'cancelacion' => null];
+    afirmar(MarkovServicio::estadoEnDia($r, '2026-02-28') === null);
+    afirmar(MarkovServicio::estadoEnDia($r, '2026-03-04') === 'C');
+    afirmar(MarkovServicio::estadoEnDia($r, '2026-03-06') === 'H');
+    afirmar(MarkovServicio::estadoEnDia($r, '2026-03-07') === 'F');
+    $n = MarkovServicio::contarTransiciones([$r], '2026-01-01', '2026-12-31');
+    afirmar($n['C']['C'] === 3 && $n['C']['H'] === 1 && $n['H']['H'] === 1 && $n['H']['F'] === 1, 'Conteos incorrectos: ' . json_encode($n));
+});
+prueba('Cancelación y no-show son absorbentes; una reserva abierta no se cuenta más allá de lo conocido', function () {
+    $cancelada = ['registro' => '2026-03-01', 'estado' => 'CANCELADA', 'fecha_ingreso' => '2026-03-10', 'fecha_salida' => '2026-03-12', 'checkin' => null, 'checkout' => null, 'cancelacion' => '2026-03-03'];
+    $noShow = ['registro' => '2026-03-01', 'estado' => 'NO_SHOW', 'fecha_ingreso' => '2026-03-02', 'fecha_salida' => '2026-03-04', 'checkin' => null, 'checkout' => null, 'cancelacion' => null];
+    $futura = ['registro' => '2026-03-01', 'estado' => 'CONFIRMADA', 'fecha_ingreso' => '2026-03-20', 'fecha_salida' => '2026-03-22', 'checkin' => null, 'checkout' => null, 'cancelacion' => null];
+    $n = MarkovServicio::contarTransiciones([$cancelada, $noShow, $futura], '2026-01-01', '2026-03-10');
+    afirmar($n['C']['X'] === 1 && $n['C']['N'] === 1, 'Faltan transiciones a absorbentes');
+    // cancelada: 1 día C→C; no-show: 0; futura: del 1 al 10 de marzo = 9 días C→C
+    afirmar($n['C']['C'] === 10, 'Se esperaban 10 transiciones C→C y hubo ' . $n['C']['C']);
+    afirmar(array_sum($n['X']) === 0 && array_sum($n['N']) === 0, 'No se cuenta nada desde un absorbente');
+});
+prueba('Con el historial de la base de datos: matriz válida y cada fila de B suma 1', function () {
+    $a = MarkovServicio::analizar(date('Y-m-d', strtotime('-12 months')), date('Y-m-d'), null, 7);
+    afirmar($a['valida'], 'Alguna fila de P no suma 1');
+    foreach ($a['absorcion']['B'] as $fila) {
+        cerca(array_sum($fila), 1.0, 1e-9);
+    }
+    cerca(array_sum($a['evolucion'][7]), 1.0, 1e-9);
+});
+prueba('La sobreventa puede usar las probabilidades de Markov', function () {
+    $e = SobreventaServicio::evaluar(date('Y-m-d', strtotime('+3 days')), 500, null, 0, 'MARKOV', 0.6);
+    afirmar($e['fuente'] === 'MARKOV');
+    afirmar($e['p_ausencia'] > 0 && $e['p_ausencia'] < 1);
+    cerca(array_sum($e['prob_estados']), 1.0, 1e-9);
+    afirmar(isset($e['criterios']['elegida']['savage']));
 });
 
 // ======================================================================

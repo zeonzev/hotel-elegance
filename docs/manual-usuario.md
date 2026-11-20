@@ -51,6 +51,11 @@ Las reservas pedidas desde el sitio público llegan a **Solicitudes web**. **Ate
 - **Dashboard**: ocupación de hoy, llegadas y salidas, ingresos del mes, ADR y RevPAR, reservas por canal y alertas.
 - **Política de sobreventa** (CU-17 a CU-19): elija una noche y vea la ocupación, la tasa de no-show, la matriz de decisión,
   la distribución binomial, el valor esperado de aceptar una reserva más y el nivel óptimo de sobreventa. **Guardar evaluación** la registra.
+  También muestra la matriz de pagos (aceptar 0 a 3 reservas extra) con los criterios Maximax, Maximin, Laplace, Hurwicz (α) y Savage y el VEIP.
+  En **Probabilidades de ausencia** se elige entre la tasa mensual (CU-17) y la Cadena de Markov.
+- **Cadenas de Markov**: el sistema arma la cadena del ciclo de una reserva (Confirmada, En estadía, Cancelada, No presentada, Finalizada)
+  con el historial. Elija el periodo, el tipo de habitación y el horizonte n para ver la matriz de transición con sus conteos, Vₙ = V₀·Pⁿ,
+  las probabilidades de absorción y la validación con datos reales. **Usar en Teoría de Decisiones** lleva esa probabilidad de no-show a la sobreventa.
 - **Tarifas y demanda** (CU-20 / CU-21): mapa de demanda de las próximas semanas, temporadas y **tarifa referencial sugerida**.
 - **Reportes** (CU-22 a CU-24): ocupación, ingresos y cancelaciones por periodo, exportables a **CSV**, **Excel** e **Imprimir / PDF**.
 
